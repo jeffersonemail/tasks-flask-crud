@@ -10,11 +10,14 @@ task_id_control = 1
 def create_task():
     global task_id_control
     data = request.get_json()
+    if not data["title"] or data["title"] == "":
+        return jsonify({"message": "O título da tarefa é obrigatório"}), 400
+    
     new_task = Task(task_id_control, data["title"], data.get("description", ""))
     task_id_control += 1
     tasks.append(new_task)
     print(tasks)
-    return jsonify({"message": "Nova tarefa criada com sucesso!"})
+    return jsonify({"message": "Nova tarefa criada com sucesso!", "id": new_task._id})
 
 @app.route("/tasks", methods=["GET"])
 def get_tasks():
